@@ -4,19 +4,19 @@ import androidx.compose.runtime.Composable
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import org.example.project.View.Screen.Screen1
+import org.example.project.View.Screen.MainMenu
 import org.example.project.View.Screen.Screen2
 import org.example.project.View.Screen.Screen3
 
 @Composable
 fun NavigationWrapper(){
-    val backStack = rememberNavBackStack(navConfig, Route.Screen1)
+    val backStack = rememberNavBackStack(navConfig, Route.MainMenu)
     NavDisplay(
         backStack = backStack,
         onBack = { backStack.removeLastOrNull() },
         entryProvider = entryProvider {
-            entry<Route.Screen1> {
-                Screen1(
+            entry<Route.MainMenu> {
+                MainMenu(
                     navigateTo2 = { backStack.add(Route.Screen2) },
                     navigateTo3 = { backStack.add(Route.Screen3(userId = "user_42")) }
                 )

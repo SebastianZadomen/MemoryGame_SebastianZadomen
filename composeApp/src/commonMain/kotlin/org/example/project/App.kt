@@ -21,10 +21,8 @@ import memorygame_sebastianzadomen.composeapp.generated.resources.compose_multip
 import org.example.project.View.Navigation.NavigationWrapper
 
 @Composable
-@Preview
 fun App() {
-    MaterialTheme {
         NavigationWrapper()
     }
-}
+
 
