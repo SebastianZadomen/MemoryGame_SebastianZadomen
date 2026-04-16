@@ -1,6 +1,7 @@
 package org.example.project.View.Screen
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.snapping.SnapPosition
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +23,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.paint
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.Key.Companion.R
 import androidx.compose.ui.text.font.FontFamily
@@ -39,6 +42,7 @@ import memorygame_sebastianzadomen.composeapp.generated.resources.mysticgrace
 import memorygame_sebastianzadomen.composeapp.generated.resources.contador
 
 import org.jetbrains.compose.resources.Font
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun MainMenu(navigateTo2: () -> Unit, navigateTo3: () -> Unit) {
@@ -50,7 +54,7 @@ fun MainMenu(navigateTo2: () -> Unit, navigateTo3: () -> Unit) {
 
     val sizeFontTitle = if (vm.showMessage) 50.sp else 60.sp
     val textoTitulo = if (vm.showMessage) "Memory Game" else "Memory\nGame"
-    Column(modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally,
+    Column(modifier = Modifier.fillMaxSize()/*.paint(painterResource(id= Res.drawable.))*/, horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
 
     ) {
