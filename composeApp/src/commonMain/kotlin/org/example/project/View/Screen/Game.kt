@@ -14,14 +14,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun Screen3(userId: String, navigateBack: () -> Unit) {
-    Column(
-        modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally,
+fun Game(navigateBack: () -> Unit) {
+    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text("Pantalla 3: $userId", style = MaterialTheme.typography.headlineMedium)
+        Text("Pantalla 2", style = MaterialTheme.typography.headlineMedium)
         Spacer(Modifier.height(24.dp))
-        Button(onClick = navigateBack) { Text("Volver") }
     }
+    Button(onClick = navigateBack) { Text("Volver") }
 
 }

@@ -11,8 +11,10 @@ import kotlinx.serialization.modules.polymorphic
         serializersModule = SerializersModule {
             polymorphic(NavKey::class) {
                 subclass(Route.MainMenu::class, Route.MainMenu.serializer())
-                subclass(Route.Screen2::class, Route.Screen2.serializer())
-                subclass(Route.Screen3::class, Route.Screen3.serializer())
+                subclass(Route.Game::class, Route.Game.serializer())
+                subclass(Route.Score::class, Route.Score.serializer())
+                subclass(Route.Settings::class, Route.Settings.serializer())
+
             }
         }
     }
