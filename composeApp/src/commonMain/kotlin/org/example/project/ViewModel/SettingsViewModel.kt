@@ -3,6 +3,7 @@ package org.example.project.ViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 
@@ -22,5 +23,10 @@ class SettingsViewModel: ViewModel()  {
     fun modifyShowDificultad(){
         showDificultad = !showDificultad
     }
+
+    var switchSettings by mutableStateOf(true)
+
+
+
 
 }
