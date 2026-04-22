@@ -245,10 +245,10 @@ fun Settings(navigateBack: () -> Unit) {
                         Spacer(Modifier.height(24.dp))
 
                         Text(
-                            text = "1. Toca una carta para revelar su runa.\n\n" +
-                                    "2. Memoriza la ubicación de la magia.\n\n" +
-                                    "3. Encuentra su pareja idéntica para forjar el vínculo.\n\n" +
-                                    "4. ¡Completa el tablero antes de que acabe el tiempo!",
+                            text = "1. Toca una carta .\n\n" +
+                                    "2. Memorizala.\n\n" +
+                                    "3. Encuentra su pareja.\n\n" +
+                                    "4. Completa sin fallar.",
                             fontSize = 16.sp,
                             color = colorGold,
                             lineHeight = 22.sp
@@ -261,7 +261,7 @@ fun Settings(navigateBack: () -> Unit) {
                             colors = ButtonDefaults.buttonColors(containerColor = colorHextechBlue),
                             shape = CutCornerShape(4.dp)
                         ) {
-                            Text("ENTENDIDO", color = Color.Black, fontWeight = FontWeight.Bold)
+                            Text("Entendido", color = Color.Black, fontWeight = FontWeight.Bold)
                         }
                     }
                 }
