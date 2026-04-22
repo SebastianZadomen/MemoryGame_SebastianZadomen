@@ -18,17 +18,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import org.example.project.ViewModel.Pantalla1ViewModel
 import androidx.compose.ui.text.font.FontWeight
 import memorygame_sebastianzadomen.composeapp.generated.resources.Res
 import memorygame_sebastianzadomen.composeapp.generated.resources.mysticgrace
 import memorygame_sebastianzadomen.composeapp.generated.resources.contador
+import org.example.project.ViewModel.Screen1ViewModel
 
 import org.jetbrains.compose.resources.Font
 
 @Composable
 fun MainMenu(navigateTo2: () -> Unit, navigateTo3: () -> Unit, navigateTo4: () -> Unit) {
-    val vm: Pantalla1ViewModel = viewModel { Pantalla1ViewModel() }
+    val vm: Screen1ViewModel = viewModel { Screen1ViewModel() }
     val MysticGrace = FontFamily(
         Font(Res.font.mysticgrace))
     val ContadorFont = FontFamily(

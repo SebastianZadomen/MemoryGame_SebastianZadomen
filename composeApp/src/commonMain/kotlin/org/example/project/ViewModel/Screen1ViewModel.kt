@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 
-class Pantalla1ViewModel: ViewModel() {
+class Screen1ViewModel: ViewModel() {
     var showMessage by mutableStateOf(false)
         private set
 

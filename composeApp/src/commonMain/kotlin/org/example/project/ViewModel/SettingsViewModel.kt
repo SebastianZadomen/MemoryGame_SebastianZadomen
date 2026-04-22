@@ -27,6 +27,9 @@ class SettingsViewModel: ViewModel()  {
     var switchSettings by mutableStateOf(true)
 
 
-
+    fun restoreSettings() {
+        selectedDificultad = 0 // Vuelve a Fácil
+        switchSettings = true  // Vuelve a encender la música
+    }
 
 }
