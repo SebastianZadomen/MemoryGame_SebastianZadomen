@@ -1,5 +1,6 @@
 package org.example.project.View.Screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,20 +27,32 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.lifecycle.viewmodel.compose.viewModel
+import memorygame_sebastianzadomen.composeapp.generated.resources.Res
+import memorygame_sebastianzadomen.composeapp.generated.resources.spielgelsans
+import org.example.project.ViewModel.UiUtils
+import org.jetbrains.compose.resources.Font
+import org.jetbrains.compose.resources.FontResource
+
 
 @Composable
 fun Score(userId: String, navigateBack: () -> Unit) {
-
+    val uiVM : UiUtils = viewModel { UiUtils() }
+    val SpielgelFont = FontFamily(
+        Font(Res.font.spielgelsans))
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().background(Color.Black),
         contentAlignment = Alignment.Center
     ) {
         Column(verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("Score", fontSize = 30.sp)
+            Text("SCORE", fontSize = 30.sp, color = uiVM.colorGold, fontWeight = FontWeight.Bold, fontFamily = SpielgelFont)
+            Spacer(Modifier.height(10.dp))
 
             Box(
-                modifier = Modifier.height(450.dp).width(600.dp).border(2.dp, Color.Black, RoundedCornerShape(10.dp) )
+                modifier = Modifier.height(450.dp).width(600.dp).border(2.dp, uiVM.colorGold, uiVM.hShape).background(uiVM.colorBgMenu, uiVM.hShape)
             )
             {
                 LazyColumn {
@@ -52,7 +65,7 @@ fun Score(userId: String, navigateBack: () -> Unit) {
             {
                 IconButton(onClick = navigateBack )
                 {
-                    Icon(Icons.Default.ArrowBack, contentDescription = "Volver" )
+                    Icon(Icons.Default.ArrowBack, contentDescription = "Volver" , tint = uiVM.colorGoldHover)
                 }
             }
         }

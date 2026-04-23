@@ -28,8 +28,8 @@ class SettingsViewModel: ViewModel()  {
 
 
     fun restoreSettings() {
-        selectedDificultad = 0 // Vuelve a Fácil
-        switchSettings = true  // Vuelve a encender la música
+        selectedDificultad = 0
+        switchSettings = true
     }
 
 }
