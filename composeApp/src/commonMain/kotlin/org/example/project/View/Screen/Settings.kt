@@ -231,40 +231,47 @@ fun Settings(navigateBack: () -> Unit) {
                     shape = uiVM.hShape,
                     colors = CardDefaults.cardColors(containerColor = uiVM.colorBgMenu)
                 ) {
-                    Column(
-                        modifier = Modifier.padding(24.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = "CÓMO JUGAR",
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = uiVM.colorGoldHover,
-                            letterSpacing = 2.sp,
-                            fontFamily = SpielgelFont
-                        )
-
-                        Spacer(Modifier.height(24.dp))
-
-                        Text(
-                            text = "1. Toca una carta .\n" +
-                                    "2. Memorizala.\n" +
-                                    "3. Encuentra su pareja.\n" +
-                                    "4. Completa sin fallar.",
-                            fontSize = 16.sp,
-                            color = uiVM.colorGold,
-                            lineHeight = 22.sp,
-                            fontFamily = SpielgelFont
-                        )
-
-                        Spacer(Modifier.height(32.dp))
-
-                        Button(
-                            onClick = { showHelpDialog = false },
-                            colors = ButtonDefaults.buttonColors(containerColor = uiVM.colorHBlue),
-                            shape = CutCornerShape(4.dp)
+                    Box(contentAlignment = Alignment.Center) {
+                        Column(
+                            modifier = Modifier.padding(24.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text("Entendido", color = Color.Black, fontWeight = FontWeight.Bold, fontFamily = SpielgelFont)
+                            Text(
+                                text = "CÓMO JUGAR",
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = uiVM.colorGoldHover,
+                                letterSpacing = 2.sp,
+                                fontFamily = SpielgelFont
+                            )
+
+                            Spacer(Modifier.height(24.dp))
+
+                            Text(
+                                text = "1. Toca una carta .\n" +
+                                        "2. Memorizala.\n" +
+                                        "3. Encuentra su pareja.\n" +
+                                        "4. Completa sin fallar.",
+                                fontSize = 16.sp,
+                                color = uiVM.colorGold,
+                                lineHeight = 22.sp,
+                                fontFamily = SpielgelFont
+                            )
+
+                            Spacer(Modifier.height(32.dp))
+
+                            Button(
+                                onClick = { showHelpDialog = false },
+                                colors = ButtonDefaults.buttonColors(containerColor = uiVM.colorHBlue),
+                                shape = CutCornerShape(4.dp)
+                            ) {
+                                Text(
+                                    "Entendido",
+                                    color = Color.Black,
+                                    fontWeight = FontWeight.Bold,
+                                    fontFamily = SpielgelFont
+                                )
+                            }
                         }
                     }
                 }
