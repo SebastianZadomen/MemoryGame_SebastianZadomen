@@ -38,11 +38,13 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import org.example.project.ViewModel.SettingsViewModel
 
 @Composable
 fun MainMenu(navigateTo2: () -> Unit, navigateTo3: () -> Unit, navigateTo4: () -> Unit) {
     val vm: Screen1ViewModel = viewModel { Screen1ViewModel() }
     val uiVM : UiUtils = viewModel { UiUtils() }
+
 
 
     val SpielgelFont = FontFamily(

@@ -11,6 +11,10 @@ data class Card (
     @SerialName("ImgUrl")
         val Url: String,
     @SerialName("Description")
-        val description: String
+        val description: String,
+
+        var isFlipped: Boolean = false,
+
+        var isMatched: Boolean = false
 )
 
