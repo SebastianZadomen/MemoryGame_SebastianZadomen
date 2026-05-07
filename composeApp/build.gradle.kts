@@ -46,8 +46,14 @@ kotlin {
                 implementation(libs.supabase.postgrest)
                 implementation(libs.supabase.gotrue)
                 implementation(libs.supabase.realtime)
+                implementation(libs.coil.compose)
+                implementation(libs.coil.network.ktor)
 
                 implementation(libs.ktor.client.core)
+                implementation(libs.ktor.client.content.negotiation)
+                implementation(libs.ktor.serialization.json)
+                implementation(libs.ktor.client.logging)
+                implementation(libs.ktor.client.encoding)
             }
         }
 

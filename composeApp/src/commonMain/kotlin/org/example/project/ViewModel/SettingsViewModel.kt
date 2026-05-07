@@ -26,7 +26,7 @@ class SettingsViewModel: ViewModel()  {
 
     var switchSettings by mutableStateOf(true)
 
-    var gridDificultad by mutableStateOf(if(selectedDificultad==0) 3 else if(selectedDificultad == 1) 4 else 5)
+    var gridDificultad by mutableStateOf(if(selectedDificultad==0) 2 else if(selectedDificultad == 1) 3 else 4)
 
 
     fun restoreSettings() {
