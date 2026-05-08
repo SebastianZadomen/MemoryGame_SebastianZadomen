@@ -25,11 +25,12 @@ dependencyResolutionManagement {
             }
         }
         mavenCentral()
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/patch")
     }
 }
-
+/*
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
-}
+}*/
 
 include(":composeApp")

@@ -1,11 +1,10 @@
 package org.example.project.View.Navigation
 
 
+import androidx.navigation3.runtime.NavKey
 import androidx.savedstate.serialization.SavedStateConfiguration
 import kotlinx.serialization.modules.SerializersModule
-import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.modules.polymorphic
-
 
 
 val navConfig = SavedStateConfiguration {

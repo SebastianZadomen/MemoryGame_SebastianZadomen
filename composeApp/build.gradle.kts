@@ -11,15 +11,22 @@ plugins {
 
 kotlin {
 
+    // ✅ Android target correcto (IMPORTANTE)
     androidTarget {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+        compilations.all {
+            compileTaskProvider.configure {
+                compilerOptions {
+                    jvmTarget.set(JvmTarget.JVM_11)
+                }
+            }
         }
     }
 
+    // Desktop JVM
     jvm()
 
-    js {
+    // JS target correcto
+    js(IR) {
         browser()
         binaries.executable()
     }
@@ -30,30 +37,37 @@ kotlin {
             dependencies {
                 implementation(libs.compose.runtime)
                 implementation(libs.compose.foundation)
-                implementation(libs.compose.material3)
+                implementation("org.jetbrains.compose.material3:material3:1.7.3")
+                implementation(libs.jetbrains.navigation3.ui)
+
                 implementation(libs.compose.ui)
                 implementation(libs.compose.components.resources)
-                implementation(compose.materialIconsExtended)
 
                 implementation(libs.androidx.lifecycle.viewmodelCompose)
                 implementation(libs.androidx.lifecycle.runtimeCompose)
 
-                implementation(libs.jetbrains.navigation3.ui)
-
+                // Serialization
                 implementation(libs.kotlinx.serialization.core)
-
+                implementation(libs.kotlinx.serialization.json)
+                implementation("io.coil-kt.coil3:coil-compose:3.0.0")
+                // Supabase
                 implementation(libs.supabase.kt)
                 implementation(libs.supabase.postgrest)
                 implementation(libs.supabase.gotrue)
                 implementation(libs.supabase.realtime)
-                implementation(libs.coil.compose)
-                implementation(libs.coil.network.ktor)
+                implementation(compose.materialIconsExtended)
 
+                // KTOR CORE (solo común)
                 implementation(libs.ktor.client.core)
                 implementation(libs.ktor.client.content.negotiation)
                 implementation(libs.ktor.serialization.json)
                 implementation(libs.ktor.client.logging)
-                implementation(libs.ktor.client.encoding)
+                implementation(libs.kotlinx.serialization.core)
+
+
+                implementation(compose.components.resources)
+                implementation(compose.components.uiToolingPreview)
+
             }
         }
 
@@ -62,7 +76,7 @@ kotlin {
                 implementation(libs.androidx.activity.compose)
                 implementation(libs.compose.uiToolingPreview)
 
-                // Ktor Android
+                // Android engine
                 implementation(libs.ktor.client.okhttp)
             }
         }
@@ -72,13 +86,14 @@ kotlin {
                 implementation(compose.desktop.currentOs)
                 implementation(libs.kotlinx.coroutinesSwing)
 
-                // Ktor JVM
+                // Desktop engine
                 implementation(libs.ktor.client.cio)
             }
         }
 
         val jsMain by getting {
             dependencies {
+                // ⚠️ IMPORTANTE: en Ktor 2+ normalmente es:
                 implementation(libs.ktor.client.js)
             }
         }
