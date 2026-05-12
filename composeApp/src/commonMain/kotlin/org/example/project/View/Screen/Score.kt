@@ -31,7 +31,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.viewmodel.compose.viewModel
 import memorygame_sebastianzadomen.composeapp.generated.resources.Res
-import memorygame_sebastianzadomen.composeapp.generated.resources.spielgelsans
+import memorygame_sebastianzadomen.composeapp.generated.resources.spiegelsans
 import org.example.project.ViewModel.UiUtils
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.FontResource
@@ -41,7 +41,7 @@ import org.jetbrains.compose.resources.FontResource
 fun Score(userId: String, navigateBack: () -> Unit) {
     val uiVM : UiUtils = viewModel { UiUtils() }
     val SpielgelFont = FontFamily(
-        Font(Res.font.spielgelsans))
+        Font(Res.font.spiegelsans))
     Box(
         modifier = Modifier.fillMaxSize().background(Color.Black),
         contentAlignment = Alignment.Center

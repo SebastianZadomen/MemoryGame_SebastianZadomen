@@ -10,28 +10,28 @@ import androidx.lifecycle.ViewModel
 class SettingsViewModel: ViewModel()  {
 
     val itemsDificultad = listOf(
-        "Facil",
+        "Fácil",
         "Normal",
-        "Dificil"
+        "Difícil"
     )
-    var selectedDificultad by mutableStateOf(0)
 
-
-    var showDificultad by mutableStateOf(false)
-        private set
-
-    fun modifyShowDificultad(){
-        showDificultad = !showDificultad
-    }
+    var selectedDificultad by mutableStateOf(1)
+    var gridDificultad by mutableStateOf(3)
 
     var switchSettings by mutableStateOf(true)
 
-    var gridDificultad by mutableStateOf(if(selectedDificultad==0) 2 else if(selectedDificultad == 1) 3 else 4)
-
-
-    fun restoreSettings() {
-        selectedDificultad = 0
-        switchSettings = true
+    fun changeDificultad(index: Int) {
+        selectedDificultad = index
+        gridDificultad = when (index) {
+            0 -> 2
+            1 -> 3
+            2 -> 4
+            else -> 3
+        }
     }
 
+    fun restoreSettings() {
+        changeDificultad(1)
+        switchSettings = true
+    }
 }

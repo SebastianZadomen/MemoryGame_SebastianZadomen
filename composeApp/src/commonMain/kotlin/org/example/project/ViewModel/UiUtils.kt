@@ -7,7 +7,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import memorygame_sebastianzadomen.composeapp.generated.resources.Res
-import memorygame_sebastianzadomen.composeapp.generated.resources.mysticgrace
 import org.jetbrains.compose.resources.Font
 
 class UiUtils : ViewModel() {

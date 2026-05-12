@@ -54,7 +54,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import memorygame_sebastianzadomen.composeapp.generated.resources.Res
-import memorygame_sebastianzadomen.composeapp.generated.resources.spielgelsans
+import memorygame_sebastianzadomen.composeapp.generated.resources.spiegelsans
 import org.example.project.ViewModel.SettingsViewModel
 import org.example.project.ViewModel.UiUtils
 import org.jetbrains.compose.resources.Font
@@ -65,7 +65,7 @@ fun Settings(navigateBack: () -> Unit) {
     var showHelpDialog by remember { mutableStateOf(false) }
     val uiVM : UiUtils = viewModel { UiUtils() }
     val SpielgelFont = FontFamily(
-        Font(Res.font.spielgelsans))
+        Font(Res.font.spiegelsans))
 
     Box(
         modifier = Modifier
@@ -147,7 +147,7 @@ fun Settings(navigateBack: () -> Unit) {
                                     DropdownMenuItem(
                                         text = { Text(title, color = uiVM.colorGoldHover, fontFamily = SpielgelFont) },
                                         onClick = {
-                                            vm.selectedDificultad = index
+                                            vm.changeDificultad(index)
                                             expanded = false
                                         }
                                     )

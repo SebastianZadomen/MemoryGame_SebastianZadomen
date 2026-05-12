@@ -28,8 +28,8 @@ import androidx.compose.ui.text.font.FontWeight
 import memorygame_sebastianzadomen.composeapp.generated.resources.Res
 import memorygame_sebastianzadomen.composeapp.generated.resources.beaufort
 import org.example.project.ViewModel.Screen1ViewModel
-import memorygame_sebastianzadomen.composeapp.generated.resources.spielgelsans
-import memorygame_sebastianzadomen.composeapp.generated.resources.ghore
+import memorygame_sebastianzadomen.composeapp.generated.resources.spiegelsans
+//import memorygame_sebastianzadomen.composeapp.generated.resources.ghore
 import org.example.project.ViewModel.UiUtils
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.FontResource
@@ -48,10 +48,10 @@ fun MainMenu(navigateTo2: () -> Unit, navigateTo3: () -> Unit, navigateTo4: () -
 
 
     val SpielgelFont = FontFamily(
-        Font(Res.font.spielgelsans)
+        Font(Res.font.spiegelsans)
     )
     val TitleFont = FontFamily(
-        Font(Res.font.ghore)
+        Font(Res.font.beaufort)
     )
 
     val sizeFontTitle = if (vm.showMessage) 90.sp else 120.sp
