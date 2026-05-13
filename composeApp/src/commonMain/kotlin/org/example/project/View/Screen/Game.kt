@@ -32,6 +32,7 @@ import memorygame_sebastianzadomen.composeapp.generated.resources.beaufort
 import memorygame_sebastianzadomen.composeapp.generated.resources.spiegelsans
 import org.example.project.Card.Card
 import org.example.project.ViewModel.CardBDViewModel
+import org.example.project.ViewModel.ScoreBDViewModel
 import org.example.project.ViewModel.SettingsViewModel
 import org.example.project.ViewModel.UiUtils
 import org.jetbrains.compose.resources.Font
@@ -57,10 +58,8 @@ fun Game(navigateBack: () -> Unit) {
     val totalPares = gameCards.size / 2
     val isGameOver = gameCards.isNotEmpty() && gameCards.all { it.isMatched }
 
-    // ESTADO DEL TEMPORIZADOR
     var timeElapsed by remember { mutableStateOf(0) }
 
-    // Efecto para hacer funcionar el temporizador
     LaunchedEffect(gameCards.isNotEmpty(), isGameOver) {
         if (gameCards.isNotEmpty() && !isGameOver) {
             while (true) {
@@ -70,7 +69,6 @@ fun Game(navigateBack: () -> Unit) {
         }
     }
 
-    // Preparar el juego al inicio
     LaunchedEffect(todasLasCards, columnas) {
         if (todasLasCards.isNotEmpty() && gameCards.isEmpty()) {
             cardVM.prepararEscenario(columnas)
@@ -95,7 +93,7 @@ fun Game(navigateBack: () -> Unit) {
                 tiempoFinal = timeElapsed,
                 onPlayAgain = {
                     cardVM.prepararEscenario(columnas)
-                    timeElapsed = 0 // Reiniciar tiempo al jugar de nuevo
+                    timeElapsed = 0
                 },
                 onBackToMenu = navigateBack
             )
@@ -124,7 +122,6 @@ fun Game(navigateBack: () -> Unit) {
                     Text("VOLVER", color = uiVM.colorGoldHover, fontFamily = spielgelFont, fontWeight = FontWeight.Bold)
                 }
 
-                // TIEMPO TRANSCURRIDO
                 val minutos = timeElapsed / 60
                 val segundos = timeElapsed % 60
                 val tiempoFormateado = "${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}"
@@ -153,7 +150,6 @@ fun Game(navigateBack: () -> Unit) {
                 }
             }
 
-            // TABLERO (Adaptativo con weight, sin LazyGrid)
             Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
                 when {
                     isLoading -> {
@@ -178,7 +174,6 @@ fun Game(navigateBack: () -> Unit) {
                         }
                     }
                     matriz.isNotEmpty() -> {
-                        // AQUÍ VOLVEMOS AL SISTEMA DE COLUMN/ROW CON WEIGHT(1f)
                         Column(
                             modifier = Modifier.fillMaxSize(),
                             verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -197,7 +192,6 @@ fun Game(navigateBack: () -> Unit) {
                                             )
                                         }
                                     }
-                                    // Añadir espacios vacíos si la última fila está incompleta
                                     val espaciosFaltantes = columnas - fila.size
                                     for (i in 0 until espaciosFaltantes) {
                                         Spacer(modifier = Modifier.weight(1f).fillMaxHeight())
@@ -263,9 +257,13 @@ fun VictoryDialog(
     onPlayAgain: () -> Unit,
     onBackToMenu: () -> Unit
 ) {
-    val minutos = tiempoFinal / 60
-    val segundos = tiempoFinal % 60
-    val tiempoFormateado = "${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}"
+    val scoreVM: ScoreBDViewModel = viewModel { ScoreBDViewModel() }
+    val setVM: SettingsViewModel = viewModel { SettingsViewModel() }
+
+    var nombreJugador by remember { mutableStateOf("") }
+    var registrado by remember { mutableStateOf(false) }
+
+    val tiempoFormateado = "${(tiempoFinal / 60).toString().padStart(2, '0')}:${(tiempoFinal % 60).toString().padStart(2, '0')}"
 
     Dialog(onDismissRequest = { }) {
         Card(
@@ -274,62 +272,60 @@ fun VictoryDialog(
             colors = CardDefaults.cardColors(containerColor = uiVM.colorBgMenu)
         ) {
             Column(
-                modifier = Modifier.padding(32.dp),
+                modifier = Modifier.padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "¡VICTORIA!",
-                    fontSize = 40.sp,
-                    fontFamily = titleFont,
-                    fontWeight = FontWeight.ExtraBold,
-                    color = uiVM.colorGoldHover,
-                    letterSpacing = 3.sp,
-                    textAlign = TextAlign.Center
-                )
+                Text("¡VICTORIA!", fontSize = 36.sp, fontFamily = titleFont, color = uiVM.colorGoldHover)
+                Text("Tiempo total: $tiempoFormateado", color = Color.White, fontFamily = spielgelFont)
 
-                Spacer(Modifier.height(24.dp))
+                Spacer(Modifier.height(20.dp))
 
-                Text(
-                    text = "Has completado los $totalPares pares.",
-                    fontSize = 18.sp,
-                    color = uiVM.colorGold,
-                    textAlign = TextAlign.Center,
-                    fontFamily = spielgelFont
-                )
+                if (!registrado) {
+                    androidx.compose.material3.OutlinedTextField(
+                        value = nombreJugador,
+                        onValueChange = { if (it.length <= 12) nombreJugador = it },
+                        label = { Text("Nombre del Guerrero", color = uiVM.colorGold) },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true,
+                        colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = uiVM.colorGold,
+                            unfocusedBorderColor = Color.Gray,
+                            focusedTextColor = Color.White,
+                            unfocusedTextColor = Color.White
+                        )
+                    )
 
-                Spacer(Modifier.height(8.dp))
-
-                // Mostrar tiempo en el Pop-up final
-                Text(
-                    text = "Tiempo: $tiempoFormateado",
-                    fontSize = 22.sp,
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    fontFamily = spielgelFont
-                )
-
-                Spacer(Modifier.height(40.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    TextButton(
-                        onClick = onBackToMenu,
-                        modifier = Modifier.weight(1f).border(1.dp, uiVM.colorGold, CutCornerShape(4.dp)),
-                        shape = CutCornerShape(4.dp)
-                    ) {
-                        Text("MENÚ", color = uiVM.colorGold, fontFamily = spielgelFont)
-                    }
+                    Spacer(Modifier.height(10.dp))
 
                     Button(
-                        onClick = onPlayAgain,
-                        modifier = Modifier.weight(1f),
-                        colors = ButtonDefaults.buttonColors(containerColor = uiVM.colorHBlue),
+                        onClick = {
+                            if (nombreJugador.isNotBlank()) {
+                                scoreVM.guardarNuevoScore(
+                                    nombre = nombreJugador,
+                                    tiempo = tiempoFinal,
+                                    dificultad = setVM.itemsDificultad[setVM.selectedDificultad]
+                                )
+                                registrado = true
+                            }
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = uiVM.colorGold),
+                        modifier = Modifier.fillMaxWidth(),
                         shape = CutCornerShape(4.dp)
                     ) {
-                        Text("REINTENTAR", color = Color.Black, fontWeight = FontWeight.Bold, fontFamily = spielgelFont)
+                        Text("REGISTRAR RÉCORD", color = Color.Black, fontWeight = FontWeight.Bold)
+                    }
+                } else {
+                    Text("¡RÉCORD REGISTRADO!", color = uiVM.colorHBlue, fontWeight = FontWeight.Bold)
+                }
+
+                Spacer(Modifier.height(30.dp))
+
+                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    TextButton(onClick = onBackToMenu, modifier = Modifier.weight(1f).border(1.dp, uiVM.colorGold, CutCornerShape(4.dp))) {
+                        Text("MENÚ", color = uiVM.colorGold)
+                    }
+                    Button(onClick = onPlayAgain, modifier = Modifier.weight(1f), colors = ButtonDefaults.buttonColors(containerColor = uiVM.colorHBlue)) {
+                        Text("REINTENTAR", color = Color.Black)
                     }
                 }
             }
