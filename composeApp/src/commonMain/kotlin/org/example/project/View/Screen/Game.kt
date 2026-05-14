@@ -9,6 +9,9 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -37,6 +41,7 @@ import memorygame_sebastianzadomen.composeapp.generated.resources.backimage
 import memorygame_sebastianzadomen.composeapp.generated.resources.beaufort
 import memorygame_sebastianzadomen.composeapp.generated.resources.spiegelsans
 import org.example.project.Card.Card
+import org.example.project.SharedPreferences.SettingsRepository
 import org.example.project.ViewModel.CardBDViewModel
 import org.example.project.ViewModel.ScoreBDViewModel
 import org.example.project.ViewModel.SettingsViewModel
@@ -47,7 +52,7 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun Game(navigateBack: () -> Unit) {
     val cardVM: CardBDViewModel = viewModel { CardBDViewModel() }
-    val setVM: SettingsViewModel = viewModel { SettingsViewModel() }
+    val setVM: SettingsViewModel = viewModel { SettingsViewModel(SettingsRepository()) }
     val uiVM: UiUtils = viewModel { UiUtils() }
 
     val gameCards by cardVM.gameCards.collectAsState()
@@ -69,19 +74,18 @@ fun Game(navigateBack: () -> Unit) {
     LaunchedEffect(gameCards.isNotEmpty(), isGameOver) {
         if (gameCards.isNotEmpty() && !isGameOver) {
             while (true) {
-                delay(1000L) // Esperar 1 segundo
+                delay(1000L)
                 timeElapsed++
             }
         }
     }
 
-    LaunchedEffect(todasLasCards, columnas) {
-        if (todasLasCards.isNotEmpty() && gameCards.isEmpty()) {
+    LaunchedEffect(todasLasCards.isNotEmpty(), columnas) {
+        if (todasLasCards.isNotEmpty()) {
             cardVM.prepararEscenario(columnas)
-            timeElapsed = 0 // Reiniciar tiempo
+            timeElapsed = 0
         }
     }
-
     val matriz = remember(gameCards, columnas) {
         gameCards.chunked(columnas)
     }
@@ -101,26 +105,34 @@ fun Game(navigateBack: () -> Unit) {
                     cardVM.prepararEscenario(columnas)
                     timeElapsed = 0
                 },
-                onBackToMenu = navigateBack
+                onBackToMenu = {
+                    cardVM.prepararEscenario(columnas)
+                    timeElapsed = 0
+                    navigateBack()
+                }
             )
         }
 
         Column(
             modifier = Modifier
-                .fillMaxWidth(0.95f)
-                .fillMaxHeight(0.95f)
+                .fillMaxSize()
                 .background(uiVM.colorBgMenu, uiVM.hShape)
-                .border(2.dp, uiVM.colorGold, uiVM.hShape)
-                .padding(20.dp)
+                .padding(8.dp)
         ) {
-            // CABECERA
+
             Row(
-                modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 40.dp, bottom = 16.dp, start = 8.dp, end = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Button(
-                    onClick = navigateBack,
+                    onClick = {
+                        cardVM.prepararEscenario(columnas)
+                        timeElapsed = 0
+                        navigateBack()
+                    },
                     colors = ButtonDefaults.buttonColors(containerColor = uiVM.colorBgMenu),
                     shape = CutCornerShape(4.dp),
                     modifier = Modifier.border(1.dp, uiVM.colorGold, CutCornerShape(4.dp))
@@ -179,32 +191,31 @@ fun Game(navigateBack: () -> Unit) {
                             )
                         }
                     }
-                    matriz.isNotEmpty() -> {
-                        Column(
-                            modifier = Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            matriz.forEach { fila ->
-                                Row(
-                                    modifier = Modifier.weight(1f).fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    fila.forEach { carta ->
-                                        Box(modifier = Modifier.weight(1f).fillMaxHeight()) {
-                                            MemoryCard(
-                                                card = carta,
-                                                uiVM = uiVM,
-                                                onClick = { cardVM.voltearCarta(carta) }
-                                            )
-                                        }
-                                    }
-                                    val espaciosFaltantes = columnas - fila.size
-                                    for (i in 0 until espaciosFaltantes) {
-                                        Spacer(modifier = Modifier.weight(1f).fillMaxHeight())
-                                    }
-                                }
+                    gameCards.isNotEmpty() -> {
+
+                        val (columnasVisuales, paddingExterior, espacioEntreCartas) = when (gameCards.size) {
+                            6 -> Triple(3, 2.dp, 16.dp)
+                            8 -> Triple(3, 4.dp, 12.dp)
+                            else -> Triple(3, 8.dp, 8.dp)
+                        }
+
+                            LazyVerticalGrid(
+                                columns = GridCells.Fixed(columnasVisuales),
+                                contentPadding = PaddingValues(paddingExterior),
+                                verticalArrangement = Arrangement.spacedBy(espacioEntreCartas, Alignment.CenterVertically),
+                                horizontalArrangement = Arrangement.spacedBy(espacioEntreCartas),
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                items(gameCards) { carta ->
+                                    MemoryCard(
+                                        card = carta,
+                                        uiVM = uiVM,
+                                        onClick = { cardVM.voltearCarta(carta) }
+                                    )
+
                             }
                         }
+
                     }
                 }
             }
@@ -225,7 +236,8 @@ fun MemoryCard(
 
     Box(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
+            .aspectRatio(0.66f)
             .graphicsLayer {
                 rotationY = rotation
                 cameraDistance = 12f * density
@@ -238,13 +250,15 @@ fun MemoryCard(
             Image(
                 painter = painterResource(Res.drawable.backimage),
                 contentDescription = "Reverso",
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
             )
         } else {
             AsyncImage(
                 model = card.Url,
                 contentDescription = card.name,
-                modifier = Modifier.fillMaxSize().graphicsLayer { rotationY = 180f }
+                modifier = Modifier.fillMaxSize().graphicsLayer { rotationY = 180f },
+                contentScale = ContentScale.Crop
             )
             if (card.isMatched) {
                 Box(modifier = Modifier.fillMaxSize().background(uiVM.colorGold.copy(alpha = 0.2f)))
@@ -252,7 +266,6 @@ fun MemoryCard(
         }
     }
 }
-
 @Composable
 fun VictoryDialog(
     titleFont: FontFamily,
@@ -264,8 +277,9 @@ fun VictoryDialog(
     onBackToMenu: () -> Unit
 ) {
     val scoreVM: ScoreBDViewModel = viewModel { ScoreBDViewModel() }
-    val setVM: SettingsViewModel = viewModel { SettingsViewModel() }
-
+    val setVM: SettingsViewModel = viewModel {
+        SettingsViewModel(SettingsRepository())
+    }
     var nombreInput by remember { mutableStateOf(setVM.nombreUsuarioGuardado) }
     var registrado by remember { mutableStateOf(false) }
 
@@ -286,7 +300,6 @@ fun VictoryDialog(
 
                 Spacer(Modifier.height(20.dp))
 
-                // SOLO pedimos el nombre si el nombre guardado está vacío
                 if (!registrado && setVM.nombreUsuarioGuardado.isEmpty()) {
                     OutlinedTextField(
                         value = nombreInput,
@@ -303,8 +316,11 @@ fun VictoryDialog(
                     Button(
                         onClick = {
                             if (nombreInput.isNotBlank()) {
-                                setVM.nombreUsuarioGuardado = nombreInput // Lo guardamos para la próxima
-                                scoreVM.guardarNuevoScore(
+                                setVM.nombreUsuarioGuardado =
+                                    nombreInput
+
+
+                                scoreVM.guardarOActualizarScore(
                                     nombre = nombreInput,
                                     tiempo = tiempoFinal,
                                     dificultad = setVM.itemsDificultad[setVM.selectedDificultad]
@@ -318,12 +334,11 @@ fun VictoryDialog(
                         Text("REGISTRAR RÉCORD", color = Color.Black, fontWeight = FontWeight.Bold)
                     }
                 }
-                // Si YA tenemos el nombre guardado de antes, mostramos un botón directo para subir el score
                 else if (!registrado && setVM.nombreUsuarioGuardado.isNotEmpty()) {
                     Text("Jugador: ${setVM.nombreUsuarioGuardado}", color = uiVM.colorGold)
                     Button(
                         onClick = {
-                            scoreVM.guardarNuevoScore(
+                            scoreVM.guardarOActualizarScore(
                                 nombre = setVM.nombreUsuarioGuardado,
                                 tiempo = tiempoFinal,
                                 dificultad = setVM.itemsDificultad[setVM.selectedDificultad]

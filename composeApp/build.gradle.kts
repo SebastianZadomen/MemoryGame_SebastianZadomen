@@ -20,7 +20,14 @@ kotlin {
         }
     }
 
-    jvm()
+    jvm() {
+
+        compilations.getByName("main") {
+            defaultSourceSet {
+                resources.srcDir("src/commonMain/composeResources")
+            }
+        }
+    }
 
     js {
         browser()
@@ -41,7 +48,7 @@ kotlin {
                 implementation(libs.androidx.lifecycle.runtimeCompose)
 
                 implementation(libs.jetbrains.navigation3.ui)
-
+                implementation("com.russhwolf:multiplatform-settings:1.1.1")
                 implementation(libs.kotlinx.serialization.core)
 
                 implementation(libs.supabase.kt)
@@ -56,7 +63,8 @@ kotlin {
                 implementation(libs.ktor.serialization.json)
                 implementation(libs.ktor.client.logging)
                 implementation(libs.ktor.client.encoding)
-
+                implementation("com.soywiz.korlibs.korau:korau:4.0.10")
+                implementation("com.soywiz.korlibs.korio:korio:4.0.10")
 
             }
         }
@@ -102,7 +110,12 @@ kotlin {
 android {
     namespace = "org.example.project"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
-
+    sourceSets["main"].apply {
+        manifest.srcFile("src/androidMain/AndroidManifest.xml")
+        res.srcDirs("src/androidMain/res")
+        resources.srcDirs("src/commonMain/composeResources")
+        assets.srcDirs("src/commonMain/composeResources")
+    }
     defaultConfig {
         applicationId = "org.example.project"
         minSdk = libs.versions.android.minSdk.get().toInt()
@@ -140,8 +153,10 @@ compose.desktop {
             packageName = "org.example.project"
             packageVersion = "1.0.0"
         }
+        jvmArgs += "-Dcompose.resources.dir=src/commonMain/composeResources"
     }
 }
 dependencies {
     debugImplementation(libs.compose.uiTooling)
 }
+

@@ -32,16 +32,28 @@ class ScoreBDViewModel : ViewModel(){
         }
     }
 
-    fun guardarNuevoScore(nombre: String, tiempo: Int, dificultad: String) {
+    fun guardarOActualizarScore(nombre: String, tiempo: Int, dificultad: String) {
         viewModelScope.launch {
             try {
-                val nuevo = Score(name = nombre, time = tiempo, dificultad = dificultad)
-                repository.insertarScore(nuevo)
+                val scoreExistente = _allScore.value.find {
+                    it.name == nombre && it.dificultad == dificultad
+                }
+
+                if (scoreExistente != null) {
+                    if (tiempo < scoreExistente.time) {
+                        val scoreActualizado = scoreExistente.copy(time = tiempo)
+
+                        repository.actualizarScore(scoreActualizado)
+                    }
+                } else {
+                    val nuevo = Score(name = nombre, time = tiempo, dificultad = dificultad)
+                    repository.insertarScore(nuevo)
+                }
+
                 cargarScore()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
-
 }

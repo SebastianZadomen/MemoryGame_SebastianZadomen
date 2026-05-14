@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxHeight
+
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -36,9 +38,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewmodel.compose.viewModel
 import memorygame_sebastianzadomen.composeapp.generated.resources.Res
 import memorygame_sebastianzadomen.composeapp.generated.resources.spiegelsans
+import org.example.project.SharedPreferences.SettingsRepository
 import org.example.project.ViewModel.ScoreBDViewModel
 import org.example.project.ViewModel.SettingsViewModel
 import org.example.project.ViewModel.UiUtils
@@ -49,7 +53,7 @@ import org.jetbrains.compose.resources.FontResource
 fun Score(userId: String, navigateBack: () -> Unit) {
     val uiVM: UiUtils = viewModel { UiUtils() }
     val scoreVM: ScoreBDViewModel = viewModel { ScoreBDViewModel() }
-    val setVM: SettingsViewModel = viewModel { SettingsViewModel() }
+    val setVM: SettingsViewModel = viewModel { SettingsViewModel(SettingsRepository()) }
 
     val allScores by scoreVM.allScore.collectAsState()
     val spielgelFont = FontFamily(Font(Res.font.spiegelsans))
@@ -59,76 +63,106 @@ fun Score(userId: String, navigateBack: () -> Unit) {
         .filter { it.dificultad == dificultadActual }
         .sortedBy { it.time }
 
-    val miMejorRecord = scoresFiltrados.minByOrNull { it.time }
+    val miMejorRecord = scoresFiltrados.find { it.name == setVM.nombreUsuarioGuardado }
 
     Box(
         modifier = Modifier.fillMaxSize().background(Color.Black),
         contentAlignment = Alignment.Center
     ) {
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(0.90f)
+                .fillMaxHeight(0.90f)
+                .background(uiVM.colorBgMenu, uiVM.hShape)
+                .border(2.dp, uiVM.colorGold, uiVM.hShape)
+                .padding(20.dp)
         ) {
-            Text("RANKING: ${dificultadActual.uppercase()}", fontSize = 24.sp, color = uiVM.colorGold, fontWeight = FontWeight.Bold, fontFamily = spielgelFont)
-            Spacer(Modifier.height(10.dp))
-
-            Box(
-                modifier = Modifier.height(380.dp).width(600.dp)
-                    .border(2.dp, uiVM.colorGold, uiVM.hShape)
-                    .background(uiVM.colorBgMenu, uiVM.hShape)
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                LazyColumn(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-                    item {
-                        Row(Modifier.fillMaxWidth().padding(bottom = 8.dp)) {
-                            Text("#", Modifier.width(30.dp), color = uiVM.colorGold, fontWeight = FontWeight.Bold)
-                            Text("Jugador", Modifier.weight(1f), color = uiVM.colorGold, fontWeight = FontWeight.Bold)
-                            Text("Tiempo", Modifier.width(80.dp), color = uiVM.colorGold, fontWeight = FontWeight.Bold)
+                Text(
+                    text = "RANKING",
+                    fontSize = 32.sp,
+                    color = uiVM.colorGold,
+                    fontWeight = FontWeight.ExtraBold,
+                    fontFamily = spielgelFont,
+                    letterSpacing = 2.sp
+                )
+                Text(
+                    text = dificultadActual.uppercase(),
+                    fontSize = 14.sp,
+                    color = uiVM.colorGoldHover,
+                    fontFamily = spielgelFont
+                )
+
+                Spacer(Modifier.height(16.dp))
+
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .background(uiVM.colorDarkPanel, uiVM.hShape)
+                        .border(1.dp, Color(0xFF1E282D), uiVM.hShape)
+                ) {
+                    LazyColumn(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+                        item {
+                            Row(Modifier.fillMaxWidth().padding(bottom = 8.dp)) {
+                                Text("#", Modifier.width(30.dp), color = uiVM.colorGold, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                                Text("JUGADOR", Modifier.weight(1f), color = uiVM.colorGold, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                                Text("TIEMPO", Modifier.width(80.dp), color = uiVM.colorGold, fontWeight = FontWeight.Bold, fontSize = 12.sp, textAlign = TextAlign.End)
+                            }
+                        }
+
+                        itemsIndexed(scoresFiltrados) { index, score ->
+                            Row(
+                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text("${index + 1}", Modifier.width(30.dp), color = uiVM.colorGoldHover, fontSize = 14.sp)
+                                Text(score.name, Modifier.weight(1f), color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                                Text("${score.time}s", Modifier.width(80.dp), color = Color.White, textAlign = TextAlign.End)
+                            }
+                            if (index < scoresFiltrados.lastIndex) {
+                                Spacer(Modifier.height(1.dp).fillMaxWidth().background(Color(0xFF1E282D)))
+                            }
                         }
                     }
+                }
 
-                    itemsIndexed(scoresFiltrados) { index, score ->
-                        Row(
-                            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text("${index + 1}", Modifier.width(30.dp), color = uiVM.colorGoldHover, fontSize = 14.sp)
-                            Text(score.name, Modifier.weight(1f), color = Color.White, fontSize = 16.sp)
-                            Text("${score.time}s", Modifier.width(80.dp), color = Color.White)
+                Spacer(Modifier.height(16.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(uiVM.colorDarkPanel, uiVM.hShape)
+                        .border(1.dp, uiVM.colorHBlue, uiVM.hShape)
+                        .padding(12.dp)
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.Star, contentDescription = null, tint = uiVM.colorHBlue, modifier = Modifier.size(24.dp))
+                        Spacer(Modifier.width(12.dp))
+                        Column {
+                            val miNombre = setVM.nombreUsuarioGuardado.ifEmpty { "Jugador" }
+                            Text("RÉCORD DE $miNombre EN $dificultadActual", fontSize = 12.sp, color = uiVM.colorHBlue, letterSpacing = 1.sp)
+                            Text(
+                                text = if (miMejorRecord != null) "${miMejorRecord.time} segundos" else "Sin récords",
+                                fontSize = 20.sp,
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold
+                            )
                         }
-                        Spacer(Modifier.height(1.dp).fillMaxWidth().background(Color.DarkGray))
                     }
                 }
-            }
 
-            Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(12.dp))
 
-            Box(
-                modifier = Modifier.width(600.dp)
-                    .background(uiVM.colorDarkPanel, uiVM.hShape)
-                    .border(1.dp, uiVM.colorHBlue, uiVM.hShape)
-                    .padding(12.dp)
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(androidx.compose.material.icons.Icons.Default.Star, contentDescription = null, tint = uiVM.colorHBlue, modifier = Modifier.size(30.dp))
-                    Spacer(Modifier.width(10.dp))
-                    Column {
-                        Text("TU MEJOR MARCA EN $dificultadActual", fontSize = 10.sp, color = uiVM.colorHBlue)
-                        Text(
-                            text = if (miMejorRecord != null) "${miMejorRecord.time} segundos" else "Sin récords",
-                            fontSize = 18.sp,
-                            color = Color.White,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                }
-            }
-
-            Box(contentAlignment = Alignment.BottomEnd, modifier = Modifier.fillMaxWidth().width(600.dp)) {
-                IconButton(onClick = navigateBack) {
-                    Icon(Icons.Default.ArrowBack, contentDescription = "Volver", tint = uiVM.colorGoldHover)
+                IconButton(
+                    onClick = navigateBack,
+                    modifier = Modifier.align(Alignment.End).size(48.dp)
+                ) {
+                    Icon(Icons.Default.ArrowBack, contentDescription = "Volver", tint = uiVM.colorGold, modifier = Modifier.size(32.dp))
                 }
             }
         }
     }
 }
-

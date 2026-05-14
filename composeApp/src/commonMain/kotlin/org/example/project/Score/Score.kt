@@ -6,8 +6,7 @@ import kotlinx.serialization.Transient
 
 @Serializable
 data class Score (
-    val id: Long? = null,
-
+    val id: Int? = null,
     @SerialName("name")
     val name: String,
 
