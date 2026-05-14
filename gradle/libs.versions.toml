@@ -21,8 +21,10 @@ navigation3 = "2.8.0-alpha10"
 supabase = "2.4.0"
 ktor = "2.3.7"
 coil = "3.0.4"
+archCoreTesting = "2.2.0"
 
 [libraries]
+androidx-core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "archCoreTesting" }
 androidx-navigation3 = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation3" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }

@@ -8,8 +8,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -260,7 +266,7 @@ fun VictoryDialog(
     val scoreVM: ScoreBDViewModel = viewModel { ScoreBDViewModel() }
     val setVM: SettingsViewModel = viewModel { SettingsViewModel() }
 
-    var nombreJugador by remember { mutableStateOf("") }
+    var nombreInput by remember { mutableStateOf(setVM.nombreUsuarioGuardado) }
     var registrado by remember { mutableStateOf(false) }
 
     val tiempoFormateado = "${(tiempoFinal / 60).toString().padStart(2, '0')}:${(tiempoFinal % 60).toString().padStart(2, '0')}"
@@ -280,39 +286,53 @@ fun VictoryDialog(
 
                 Spacer(Modifier.height(20.dp))
 
-                if (!registrado) {
-                    androidx.compose.material3.OutlinedTextField(
-                        value = nombreJugador,
-                        onValueChange = { if (it.length <= 12) nombreJugador = it },
-                        label = { Text("Nombre del Guerrero", color = uiVM.colorGold) },
+                // SOLO pedimos el nombre si el nombre guardado está vacío
+                if (!registrado && setVM.nombreUsuarioGuardado.isEmpty()) {
+                    OutlinedTextField(
+                        value = nombreInput,
+                        onValueChange = { if (it.length <= 12) nombreInput = it },
+                        label = { Text("Introduce tu nombre:", color = uiVM.colorGold) },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
-                        colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = uiVM.colorGold,
-                            unfocusedBorderColor = Color.Gray,
+                        colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = Color.White,
                             unfocusedTextColor = Color.White
                         )
                     )
 
-                    Spacer(Modifier.height(10.dp))
-
                     Button(
                         onClick = {
-                            if (nombreJugador.isNotBlank()) {
+                            if (nombreInput.isNotBlank()) {
+                                setVM.nombreUsuarioGuardado = nombreInput // Lo guardamos para la próxima
                                 scoreVM.guardarNuevoScore(
-                                    nombre = nombreJugador,
+                                    nombre = nombreInput,
                                     tiempo = tiempoFinal,
                                     dificultad = setVM.itemsDificultad[setVM.selectedDificultad]
                                 )
                                 registrado = true
                             }
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = uiVM.colorGold),
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = CutCornerShape(4.dp)
+                        modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = uiVM.colorGold)
                     ) {
                         Text("REGISTRAR RÉCORD", color = Color.Black, fontWeight = FontWeight.Bold)
+                    }
+                }
+                // Si YA tenemos el nombre guardado de antes, mostramos un botón directo para subir el score
+                else if (!registrado && setVM.nombreUsuarioGuardado.isNotEmpty()) {
+                    Text("Jugador: ${setVM.nombreUsuarioGuardado}", color = uiVM.colorGold)
+                    Button(
+                        onClick = {
+                            scoreVM.guardarNuevoScore(
+                                nombre = setVM.nombreUsuarioGuardado,
+                                tiempo = tiempoFinal,
+                                dificultad = setVM.itemsDificultad[setVM.selectedDificultad]
+                            )
+                            registrado = true
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = uiVM.colorGold)
+                    ) {
+                        Text("SUBIR PUNTUACIÓN AUTOMÁTICAMENTE", color = Color.Black)
                     }
                 } else {
                     Text("¡RÉCORD REGISTRADO!", color = uiVM.colorHBlue, fontWeight = FontWeight.Bold)

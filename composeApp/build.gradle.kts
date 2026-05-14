@@ -1,6 +1,9 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
+
+
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
@@ -53,9 +56,19 @@ kotlin {
                 implementation(libs.ktor.serialization.json)
                 implementation(libs.ktor.client.logging)
                 implementation(libs.ktor.client.encoding)
+
+
             }
         }
+        val commonTest by getting {
+            dependencies {
+                implementation(libs.kotlin.test)
+                implementation(kotlin("test"))
 
+                @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+                implementation(compose.uiTest)
+            }
+        }
         val androidMain by getting {
             dependencies {
                 implementation(libs.androidx.activity.compose)
@@ -79,14 +92,10 @@ kotlin {
         val jsMain by getting {
             dependencies {
                 implementation(libs.ktor.client.js)
+
             }
         }
 
-        val commonTest by getting {
-            dependencies {
-                implementation(libs.kotlin.test)
-            }
-        }
     }
 }
 
@@ -120,9 +129,7 @@ android {
     }
 }
 
-dependencies {
-    debugImplementation(libs.compose.uiTooling)
-}
+
 
 compose.desktop {
     application {
@@ -134,4 +141,7 @@ compose.desktop {
             packageVersion = "1.0.0"
         }
     }
+}
+dependencies {
+    debugImplementation(libs.compose.uiTooling)
 }

@@ -45,7 +45,6 @@ import org.example.project.ViewModel.UiUtils
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.FontResource
 
-
 @Composable
 fun Score(userId: String, navigateBack: () -> Unit) {
     val uiVM: UiUtils = viewModel { UiUtils() }
@@ -55,14 +54,11 @@ fun Score(userId: String, navigateBack: () -> Unit) {
     val allScores by scoreVM.allScore.collectAsState()
     val spielgelFont = FontFamily(Font(Res.font.spiegelsans))
 
-    // Filtramos por la dificultad actual de los ajustes y ordenamos por tiempo
     val dificultadActual = setVM.itemsDificultad[setVM.selectedDificultad]
     val scoresFiltrados = allScores
         .filter { it.dificultad == dificultadActual }
         .sortedBy { it.time }
 
-    // Obtenemos el mejor récord del jugador actual (basado en el nombre guardado)
-    // Nota: Aquí usamos el nombre guardado en los ajustes o una variable local
     val miMejorRecord = scoresFiltrados.minByOrNull { it.time }
 
     Box(
@@ -76,7 +72,6 @@ fun Score(userId: String, navigateBack: () -> Unit) {
             Text("RANKING: ${dificultadActual.uppercase()}", fontSize = 24.sp, color = uiVM.colorGold, fontWeight = FontWeight.Bold, fontFamily = spielgelFont)
             Spacer(Modifier.height(10.dp))
 
-            // TABLA DE SCORES
             Box(
                 modifier = Modifier.height(380.dp).width(600.dp)
                     .border(2.dp, uiVM.colorGold, uiVM.hShape)
@@ -136,3 +131,4 @@ fun Score(userId: String, navigateBack: () -> Unit) {
         }
     }
 }
+

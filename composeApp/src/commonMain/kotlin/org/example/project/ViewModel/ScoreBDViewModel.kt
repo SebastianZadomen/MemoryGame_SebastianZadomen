@@ -18,29 +18,30 @@ class ScoreBDViewModel : ViewModel(){
     val allScore: StateFlow<List<Score>> = _allScore
 
     init {
-
-                MainScope().launch {
-                    cargarScore()
-                }
+        cargarScore()
     }
 
-    private suspend fun cargarScore() {
-        try {
-            val resultado = repository.obtenerScore()
-            _allScore.value = resultado
-        } catch (e: Exception) {
-            println("Error cargando scores: ${e.message}")
-        }
-    }
-    fun guardarNuevoScore(nombre: String, tiempo: Int, dificultad: String) {
+    fun cargarScore() {
         viewModelScope.launch {
             try {
-                val nuevoScore = Score(name = nombre, time = tiempo, dificultad = dificultad)
-                repository.insertarScore(nuevoScore)
-                cargarScore()
+                val resultado = repository.obtenerScore()
+                _allScore.value = resultado
             } catch (e: Exception) {
-                println("Error al subir score: ${e.message}")
+                e.printStackTrace()
             }
         }
     }
+
+    fun guardarNuevoScore(nombre: String, tiempo: Int, dificultad: String) {
+        viewModelScope.launch {
+            try {
+                val nuevo = Score(name = nombre, time = tiempo, dificultad = dificultad)
+                repository.insertarScore(nuevo)
+                cargarScore()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
 }

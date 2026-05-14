@@ -15,6 +15,7 @@ class SettingsViewModel: ViewModel()  {
         "Difícil"
     )
 
+    var nombreUsuarioGuardado by mutableStateOf("")
     var selectedDificultad by mutableStateOf(1)
     var gridDificultad by mutableStateOf(3)
 
