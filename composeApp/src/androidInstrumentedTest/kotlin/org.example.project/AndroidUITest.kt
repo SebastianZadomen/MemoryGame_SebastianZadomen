@@ -16,8 +16,9 @@ class AndroidUITest {
     val composeTestRule = createComposeRule()
 
     @Test
-    fun al_hacer_click_en_titulo_aparece_boton_jugar() {
-
+    fun clickingTitleShouldShowPlayButton() {
+        val context = androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().targetContext
+        org.example.project.Music.MusicInitializer.init(context)
         composeTestRule.setContent {
             MainMenu(
                 navigateTo2 = {},
@@ -38,18 +39,22 @@ class AndroidUITest {
             .onNodeWithTag("boton_jugar")
             .assertIsDisplayed()
     }
+
     @Test
-    fun verificar_dialogo_tutorial_aparece() {
+    fun verifyTutorialDialogAppears() {
         composeTestRule.setContent { Settings(navigateBack = {}) }
 
         composeTestRule.onNodeWithTag("dialogo_ayuda").assertDoesNotExist()
 
-        composeTestRule.onNodeWithTag("boton_tutorial").performClick()
+        composeTestRule.onNodeWithTag("boton_ver_reglas").performClick()
 
-        composeTestRule.onNodeWithTag("texto_como_jugar").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("dialogo_ayuda").assertIsDisplayed()
+
+        composeTestRule.onNodeWithTag("titulo_ayuda").assertIsDisplayed()
     }
+
     @Test
-    fun testMusicaSwitch() {
+    fun testMusicSwitchToggle() {
         composeTestRule.setContent {
             Settings(navigateBack = {})
         }
@@ -62,7 +67,7 @@ class AndroidUITest {
     }
 
     @Test
-    fun testAbrirYCerrarReglas() {
+    fun testOpenAndCloseRules() {
         composeTestRule.setContent {
             Settings(navigateBack = {})
         }

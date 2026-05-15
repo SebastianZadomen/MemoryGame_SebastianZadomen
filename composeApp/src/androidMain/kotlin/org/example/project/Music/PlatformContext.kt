@@ -22,3 +22,9 @@ suspend fun <T> runWithAndroidContext(block: suspend () -> T): T {
         block()
     }
 }
+
+object MusicInitializer {
+    fun init(context: Context) {
+        configurePlatformContext(context)
+    }
+}

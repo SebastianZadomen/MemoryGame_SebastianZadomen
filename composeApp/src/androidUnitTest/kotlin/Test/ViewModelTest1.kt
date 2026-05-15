@@ -1,24 +1,15 @@
 package org.example.project.ViewModelTest
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
 import org.example.project.Card.Card
-import org.example.project.SharedPreferences.SettingsRepository
 import org.example.project.ViewModel.CardBDViewModel
 import org.example.project.ViewModel.Screen1ViewModel
-import org.example.project.ViewModel.SettingsViewModel
-import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
 
 
 class ViewModelTest1 {
     @Test
-    fun comprobar_que_el_menu_se_despliega() {
+    fun check_that_the_menu_is_displayed() {
         val vm = Screen1ViewModel()
 
         assertEquals(false, vm.showMessage)
@@ -31,33 +22,33 @@ class ViewModelTest1 {
 class ScoreLogicTest {
 
     @Test
-    fun comprobar_logica_de_mejor_tiempo() {
-        val tiempoAntiguo = 50
-        val tiempoNuevo = 30
+    fun check_best_time_logic() {
+        val timeOld = 50
+        val timeNew = 30
 
-        val esMejor = tiempoNuevo < tiempoAntiguo
+        val isBetter = timeNew < timeOld
 
-        assertEquals(true, esMejor, "El tiempo de 30 debería ser mejor que el de 50")
+        assertEquals(true, isBetter, "El tiempo de 30 debería ser mejor que el de 50")
     }
 }
 class CardTest {
 
     @Test
-    fun verificar_que_la_matriz_se_divide_correctamente_segun_las_columnas() {
+    fun verify_that_the_matrix_is_correctly_divided() {
         val viewModel = CardBDViewModel()
 
 
-        val cartasDePrueba = List(6) { i ->
+        val cardsTest = List(6) { i ->
             Card(id = i.toLong(), name = "Carta $i", Url = "", description = "",isFlipped = false, isMatched = false)
         }
 
-        val resultadoMatriz = cartasDePrueba.chunked(2)
+        val resultMatriz = cardsTest.chunked(2)
 
-        assertEquals(3, resultadoMatriz.size)
-        assertEquals(2, resultadoMatriz[0].size)
+        assertEquals(3, resultMatriz.size)
+        assertEquals(2, resultMatriz[0].size)
     }
     @Test
-    fun verificar_que_al_iniciar_el_estado_es_cargando() {
+    fun verify_that_the_state_is_loading() {
         val viewModel = CardBDViewModel()
         assertEquals(true, viewModel.isLoading.value)
     }
