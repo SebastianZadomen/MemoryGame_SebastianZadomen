@@ -1,9 +1,6 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-
-
-
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
@@ -13,7 +10,6 @@ plugins {
 }
 
 kotlin {
-
     androidTarget {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
@@ -21,7 +17,6 @@ kotlin {
     }
 
     jvm() {
-
         compilations.getByName("main") {
             defaultSourceSet {
                 resources.srcDir("src/commonMain/composeResources")
@@ -35,7 +30,6 @@ kotlin {
     }
 
     sourceSets {
-
         val commonMain by getting {
             dependencies {
                 implementation(libs.compose.runtime)
@@ -65,25 +59,39 @@ kotlin {
                 implementation(libs.ktor.client.encoding)
                 implementation("com.soywiz.korlibs.korau:korau:4.0.10")
                 implementation("com.soywiz.korlibs.korio:korio:4.0.10")
-
             }
         }
+
         val commonTest by getting {
             dependencies {
-                implementation(libs.kotlin.test)
                 implementation(kotlin("test"))
-
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.uiTest)
             }
         }
+
         val androidMain by getting {
             dependencies {
                 implementation(libs.androidx.activity.compose)
                 implementation(libs.compose.uiToolingPreview)
-
-                // Ktor Android
                 implementation(libs.ktor.client.okhttp)
+            }
+        }
+
+        val androidUnitTest by getting {
+            dependencies {
+                implementation(libs.junit.junit)
+                implementation(kotlin("test"))
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1")
+            }
+        }
+
+        val androidInstrumentedTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+                implementation("androidx.compose.ui:ui-test-junit4:1.6.1")
+                implementation("androidx.test.ext:junit:1.1.5")
+                implementation("androidx.test:runner:1.5.2")
             }
         }
 
@@ -91,8 +99,6 @@ kotlin {
             dependencies {
                 implementation(compose.desktop.currentOs)
                 implementation(libs.kotlinx.coroutinesSwing)
-
-                // Ktor JVM
                 implementation(libs.ktor.client.cio)
             }
         }
@@ -100,28 +106,36 @@ kotlin {
         val jsMain by getting {
             dependencies {
                 implementation(libs.ktor.client.js)
-
             }
         }
-
     }
 }
 
 android {
     namespace = "org.example.project"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
+
     sourceSets["main"].apply {
         manifest.srcFile("src/androidMain/AndroidManifest.xml")
         res.srcDirs("src/androidMain/res")
         resources.srcDirs("src/commonMain/composeResources")
         assets.srcDirs("src/commonMain/composeResources")
     }
+
+    sourceSets["test"].apply {
+        java.srcDirs("src/androidUnitTest/kotlin")
+    }
+    sourceSets["androidTest"].apply {
+        java.srcDirs("src/androidInstrumentedTest/kotlin")
+    }
+
     defaultConfig {
         applicationId = "org.example.project"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     packaging {
@@ -142,12 +156,9 @@ android {
     }
 }
 
-
-
 compose.desktop {
     application {
         mainClass = "org.example.project.MainKt"
-
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "org.example.project"
@@ -156,7 +167,8 @@ compose.desktop {
         jvmArgs += "-Dcompose.resources.dir=src/commonMain/composeResources"
     }
 }
+
 dependencies {
     debugImplementation(libs.compose.uiTooling)
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.1")
 }
-

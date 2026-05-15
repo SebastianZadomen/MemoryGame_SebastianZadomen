@@ -43,6 +43,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -57,6 +58,7 @@ import org.example.project.SharedPreferences.SettingsRepository
 import org.example.project.ViewModel.SettingsViewModel
 import org.example.project.ViewModel.UiUtils
 import org.jetbrains.compose.resources.Font
+
 
 @Composable
 fun Settings(navigateBack: () -> Unit) {
@@ -82,7 +84,7 @@ fun Settings(navigateBack: () -> Unit) {
                     .padding(top = 24.dp)
                     .background(uiVM.colorBgMenu, uiVM.hShape)
                     .border(2.dp, uiVM.colorGold, uiVM.hShape)
-                    .padding(horizontal = 24.dp, vertical = 32.dp),
+                    .padding(horizontal = 24.dp, vertical = 32.dp).testTag("pantalla_ajustes"),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
@@ -100,7 +102,7 @@ fun Settings(navigateBack: () -> Unit) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .border(1.dp, uiVM.colorGold, CutCornerShape(4.dp))
-                        .padding(16.dp),
+                        .padding(16.dp).testTag("seccion_dificultad"),
                     verticalArrangement = Arrangement.spacedBy(20.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -125,6 +127,7 @@ fun Settings(navigateBack: () -> Unit) {
                                     .background(uiVM.colorDarkPanel, CutCornerShape(50))
                                     .border(1.dp, uiVM.colorGold, CutCornerShape(50))
                                     .clickable { expanded = true }
+                                    .testTag("selector_dificultad")
                                     .padding(horizontal = 16.dp),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.SpaceBetween
@@ -190,6 +193,7 @@ fun Settings(navigateBack: () -> Unit) {
                                 vm.switchSettings = isChecked
                                 MusicManager.toggleMusic(isChecked)
                             },
+                            modifier = Modifier.testTag("switch_musica"),
                             colors = SwitchDefaults.colors(
                                 checkedThumbColor = Color.White,
                                 checkedTrackColor = uiVM.colorHBlue
@@ -214,7 +218,8 @@ fun Settings(navigateBack: () -> Unit) {
                         onClick = { showHelpDialog = true },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(45.dp),
+                            .height(45.dp)
+                            .testTag("boton_ver_reglas"),
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0F1923)),
                         border = BorderStroke(1.dp, uiVM.colorHBlue),
                         shape = CutCornerShape(4.dp)
@@ -231,7 +236,8 @@ fun Settings(navigateBack: () -> Unit) {
                         onClick = { vm.restoreSettings() },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(45.dp),
+                            .height(45.dp)
+                            .testTag("boton_restaurar"),
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4A1010)),
                         border = BorderStroke(1.dp, Color.Red),
                         shape = CutCornerShape(4.dp)
@@ -252,7 +258,7 @@ fun Settings(navigateBack: () -> Unit) {
                     .size(48.dp)
                     .background(uiVM.colorBgMenu, CircleShape)
                     .border(2.dp, uiVM.colorGold, CircleShape)
-                    .clickable { navigateBack() },
+                    .clickable { navigateBack() }.testTag("boton_cerrar_ajustes"),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
@@ -270,7 +276,8 @@ fun Settings(navigateBack: () -> Unit) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth(0.9f)
-                    .border(2.dp, uiVM.colorGold, uiVM.hShape),
+                    .border(2.dp, uiVM.colorGold, uiVM.hShape)
+                    .testTag("dialogo_ayuda"),
                 shape = uiVM.hShape,
                 colors = CardDefaults.cardColors(containerColor = uiVM.colorBgMenu)
             ) {
@@ -283,7 +290,7 @@ fun Settings(navigateBack: () -> Unit) {
                 ) {
                     Text(
                         text = "CÓMO JUGAR",
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth().testTag("titulo_ayuda"),
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
                         color = uiVM.colorGoldHover,
@@ -311,7 +318,7 @@ fun Settings(navigateBack: () -> Unit) {
 
                     Button(
                         onClick = { showHelpDialog = false },
-                        modifier = Modifier.width(160.dp), // Damos un ancho fijo al botón para que se vea más como en la imagen
+                        modifier = Modifier.width(160.dp).testTag("boton_entendido"),
                         colors = ButtonDefaults.buttonColors(containerColor = uiVM.colorHBlue),
                         shape = CutCornerShape(4.dp)
                     ) {

@@ -22,6 +22,7 @@ supabase = "2.4.0"
 ktor = "2.3.7"
 coil = "3.0.4"
 archCoreTesting = "2.2.0"
+junitVersion = "4.12"
 
 [libraries]
 androidx-core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "archCoreTesting" }
@@ -71,6 +72,7 @@ ktor-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json", 
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 # Esta es la que soluciona tu error específico:
 ktor-client-encoding = { module = "io.ktor:ktor-client-encoding", version.ref = "ktor" }
+junit-junit = { group = "junit", name = "junit", version.ref = "junitVersion" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
