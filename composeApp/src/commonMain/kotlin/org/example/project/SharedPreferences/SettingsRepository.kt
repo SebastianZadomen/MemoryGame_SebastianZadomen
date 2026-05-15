@@ -2,10 +2,10 @@ package org.example.project.SharedPreferences
 import com.russhwolf.settings.Settings
 
 
-class SettingsRepository {
+open class SettingsRepository() {
     private val settings = Settings()
 
-    fun <T> saveSettingValue(key: String, value: T) {
+    open fun <T> saveSettingValue(key: String, value: T) {
         when (value) {
             is String -> settings.putString(key, value)
             is Int -> settings.putInt(key, value)
@@ -16,6 +16,6 @@ class SettingsRepository {
         }
     }
 
-    fun getString(key: String, defaultValue: String): String = settings.getString(key, defaultValue)
-    fun getInt(key: String, defaultValue: Int): Int = settings.getInt(key, defaultValue)
+    open fun getString(key: String, defaultValue: String): String = settings.getString(key, defaultValue)
+    open fun getInt(key: String, defaultValue: Int): Int = settings.getInt(key, defaultValue)
 }
